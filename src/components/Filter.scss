@@ -1,0 +1,17 @@
+.contact {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  width: 15rem;
+
+  input {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+}

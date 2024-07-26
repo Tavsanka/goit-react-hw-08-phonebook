@@ -1,0 +1,27 @@
+.contact-item {
+  display: flex;
+  align-items: center; /* Wyrównuje elementy wzdłuż osi Y */
+  padding: 0.25rem 0;
+}
+
+.contact-name {
+  font-weight: bold;
+}
+
+.contact-number {
+  margin-left: 1rem;
+}
+
+.delete-button {
+  margin-left: 0.75rem;
+  padding: 0.25rem 0.25rem;
+  font-size: 0.75rem;
+  border: 1px solid slategray;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+  background-color: #d32f2f;
+}
