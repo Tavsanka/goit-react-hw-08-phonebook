@@ -10,6 +10,11 @@
   border-radius: 1rem;
   margin-bottom: 1rem;
 
+  label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+
   input,
   button {
     font-size: 1rem;
@@ -23,15 +28,26 @@
   }
 
   button {
-    background-color: #3f51b5;
+    background-color: #26a69a;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #1e8c79;
+    }
+
+    &:active {
+      background-color: #1c276a;
+    }
   }
 
-  button:hover {
-    background-color: #303f9f;
+  p {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: -0.5rem;
   }
 }

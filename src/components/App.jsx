@@ -1,68 +1,42 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-
-import ContactForm from "./ContactForm";
-import ContactList from "./ContactList";
-import Filter from "./Filter";
+import React from "react";
 import {
-  fetchContacts,
-  addContact,
-  deleteContact,
-} from "../redux/features/contacts/contactSlice";
-import { setFilter } from "../redux/features/filter/filterSlice";
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { ChakraProvider, Box } from "@chakra-ui/react";
+import Register from "./Register";
+import Login from "./Login";
+import Contacts from "../pages/Contacts";
+import Navigation from "./Navigation";
+import PrivateRoute from "./PrivateRoute";
+import UserMenu from "./UserMenu";
 import "./App.scss";
 
 const App = () => {
-  const contacts = useSelector((state) => state.contacts);
-  const filter = useSelector((state) => state.filter);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
-
-  const handleAddContact = ({ name, number }) => {
-    const duplicateContact = contacts.find(
-      (contact) => contact.name.toLowerCase() === name.toLowerCase(),
-    );
-
-    if (duplicateContact) {
-      alert(`${name} is already in contacts.`);
-      return;
-    }
-
-    dispatch(addContact({ name, number }));
-  };
-
-  const handleDeleteContact = (contactId) => {
-    dispatch(deleteContact(contactId));
-  };
-
-  const handleFilterChange = (event) => {
-    dispatch(setFilter(event.target.value));
-  };
-
-  const getFilteredContacts = () => {
-    const normalizedFilter = filter.toLowerCase();
-    return contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(normalizedFilter),
-    );
-  };
-
-  const filteredContacts = getFilteredContacts();
-
   return (
-    <div>
-      <h1>Phonebook</h1>
-      <ContactForm onSubmit={handleAddContact} />
-
-      <h2>Contacts</h2>
-      <Filter value={filter} onChange={handleFilterChange} />
-      <ContactList
-        contacts={filteredContacts}
-        onDeleteContact={handleDeleteContact}
-      />
-    </div>
+    <ChakraProvider>
+      <Router basename="/goit-react-hw-08-phonebook">
+        <Box>
+          <Navigation />
+          <UserMenu /> {/* Dodaj UserMenu tutaj */}
+          <Routes>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/contacts"
+              element={
+                <PrivateRoute>
+                  <Contacts />
+                </PrivateRoute>
+              }
+            />
+            <Route path="*" element={<Navigate to="/login" />} />
+          </Routes>
+        </Box>
+      </Router>
+    </ChakraProvider>
   );
 };
 

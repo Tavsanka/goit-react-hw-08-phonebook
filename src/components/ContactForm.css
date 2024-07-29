@@ -11,6 +11,11 @@
   margin-bottom: 1rem;
 }
 
+.form label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
 .form input,
 .form button {
   font-size: 1rem;
@@ -24,14 +29,25 @@
 }
 
 .form button {
-  background-color: #3f51b5;
+  background-color: #26a69a;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .form button:hover {
-  background-color: #303f9f;
+  background-color: #1e8c79;
+}
+
+.form button:active {
+  background-color: #1c276a;
+}
+
+.form p {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: -0.5rem;
 }

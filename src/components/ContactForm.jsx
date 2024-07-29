@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { addContact } from "../redux/features/contacts/contactSlice";
 import "./ContactForm.scss";
 
 const ContactForm = ({ onSubmit }) => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.token);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -25,7 +29,7 @@ const ContactForm = ({ onSubmit }) => {
     }
 
     setErrorMessage("");
-    onSubmit({ name, number });
+    dispatch(addContact({ contact: { name, number }, token }));
     setName("");
     setNumber("");
   };

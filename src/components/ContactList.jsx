@@ -1,23 +1,90 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchContacts,
+  deleteContact,
+  updateContact,
+} from "../redux/features/contacts/contactSlice";
 import ContactItem from "./ContactItem";
 import "./ContactList.scss";
 
-const ContactList = ({ contacts, onDeleteContact }) => {
+const ContactList = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector((state) => state.contacts);
+  const filter = useSelector((state) => state.filter);
+  const token = useSelector((state) => state.auth.token);
+  const [editingContact, setEditingContact] = useState(null);
+  const [updatedContact, setUpdatedContact] = useState({
+    name: "",
+    number: "",
+  });
+
+  useEffect(() => {
+    dispatch(fetchContacts(token));
+  }, [dispatch, token]);
+
+  const handleDeleteContact = (contactId) => {
+    dispatch(deleteContact({ id: contactId, token }));
+  };
+
+  const handleUpdateContact = (contact) => {
+    setEditingContact(contact);
+    setUpdatedContact({ name: contact.name, number: contact.number });
+  };
+
+  const handleSaveUpdate = (id) => {
+    dispatch(updateContact({ id, contact: updatedContact, token }));
+    setEditingContact(null);
+  };
+
+  const handleChange = (e) => {
+    setUpdatedContact({ ...updatedContact, [e.target.name]: e.target.value });
+  };
+
+  const getFilteredContacts = () => {
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(normalizedFilter),
+    );
+  };
+
+  const filteredContacts = getFilteredContacts();
+
   return (
-    <>
-      <ul className={"list"}>
-        {contacts.map(({ id, name, number }) => (
-          <ContactItem
-            key={id}
-            id={id}
-            name={name}
-            number={number}
-            onDeleteContact={onDeleteContact}
-          />
-        ))}
-      </ul>
-    </>
+    <ul className={"list"}>
+      {filteredContacts.map((contact) => (
+        <li key={contact.id}>
+          {editingContact && editingContact.id === contact.id ? (
+            <>
+              <input
+                type="text"
+                name="name"
+                value={updatedContact.name}
+                onChange={handleChange}
+              />
+              <input
+                type="text"
+                name="number"
+                value={updatedContact.number}
+                onChange={handleChange}
+              />
+              <button onClick={() => handleSaveUpdate(contact.id)}>Save</button>
+              <button onClick={() => setEditingContact(null)}>Cancel</button>
+            </>
+          ) : (
+            <>
+              <span>{contact.name}</span>
+              <span>{contact.number}</span>
+              <button onClick={() => handleUpdateContact(contact)}>Edit</button>
+              <button onClick={() => handleDeleteContact(contact.id)}>
+                Delete
+              </button>
+            </>
+          )}
+        </li>
+      ))}
+    </ul>
   );
 };
 
