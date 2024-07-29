@@ -7,8 +7,7 @@ const API_URL = "https://connections-api.goit.global";
 export const fetchContacts = createAsyncThunk(
   "contacts/fetchContacts",
   async (_, { getState, rejectWithValue }) => {
-    const state = getState();
-    const { token } = state.auth;
+    const { token } = getState().auth;
 
     try {
       const response = await axios.get(`${API_URL}/contacts`, {
@@ -25,10 +24,7 @@ export const fetchContacts = createAsyncThunk(
 
 export const addContact = createAsyncThunk(
   "contacts/addContact",
-  async ({ contact }, { getState, rejectWithValue }) => {
-    const state = getState();
-    const { token } = state.auth;
-
+  async ({ contact, token }, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/contacts`, contact, {
         headers: {
@@ -44,10 +40,7 @@ export const addContact = createAsyncThunk(
 
 export const deleteContact = createAsyncThunk(
   "contacts/deleteContact",
-  async ({ id }, { getState, rejectWithValue }) => {
-    const state = getState();
-    const { token } = state.auth;
-
+  async ({ id, token }, { rejectWithValue }) => {
     try {
       await axios.delete(`${API_URL}/contacts/${id}`, {
         headers: {
@@ -56,6 +49,7 @@ export const deleteContact = createAsyncThunk(
       });
       return id;
     } catch (error) {
+      console.error("Delete contact failed:", error.response.data);
       return rejectWithValue(error.response.data);
     }
   },
@@ -63,9 +57,7 @@ export const deleteContact = createAsyncThunk(
 
 export const updateContact = createAsyncThunk(
   "contacts/updateContact",
-  async ({ id, contact }, { getState, rejectWithValue }) => {
-    const { token } = getState().auth;
-
+  async ({ id, contact, token }, { rejectWithValue }) => {
     try {
       const response = await axios.patch(`${API_URL}/contacts/${id}`, contact, {
         headers: {
@@ -102,17 +94,8 @@ const contactSlice = createSlice({
           state[index] = action.payload;
         }
       })
-      .addCase(fetchContacts.rejected, (state, action) => {
-        console.error("Fetch contacts failed:", action.payload);
-      })
-      .addCase(addContact.rejected, (state, action) => {
-        console.error("Add contact failed:", action.payload);
-      })
       .addCase(deleteContact.rejected, (state, action) => {
         console.error("Delete contact failed:", action.payload);
-      })
-      .addCase(updateContact.rejected, (state, action) => {
-        console.error("Update contact failed:", action.payload);
       });
   },
 });

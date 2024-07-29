@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 import { addContact } from "../redux/features/contacts/contactSlice";
+import { useToast } from "@chakra-ui/react";
 import "./ContactForm.scss";
 
 const ContactForm = ({ onSubmit }) => {
@@ -9,7 +10,9 @@ const ContactForm = ({ onSubmit }) => {
   const [number, setNumber] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch();
+  const contacts = useSelector((state) => state.contacts);
   const token = useSelector((state) => state.auth.token);
+  const toast = useToast();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -28,10 +31,31 @@ const ContactForm = ({ onSubmit }) => {
       return;
     }
 
+    const duplicate = contacts.find(
+      (contact) => contact.name === name && contact.number === number,
+    );
+    if (duplicate) {
+      toast({
+        title: "Duplicate contact",
+        description: "This contact already exists.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
     setErrorMessage("");
     dispatch(addContact({ contact: { name, number }, token }));
     setName("");
     setNumber("");
+    toast({
+      title: "Contact added",
+      description: "The contact has been added successfully.",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
   };
 
   return (
@@ -59,7 +83,7 @@ const ContactForm = ({ onSubmit }) => {
         required
         autoComplete="tel"
       />
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      {errorMessage && <p>{errorMessage}</p>}
       <button type="submit">Add contact</button>
     </form>
   );
