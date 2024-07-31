@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../redux/features/auth/authSlice";
+import { registerUser, clearError } from "../redux/features/auth/authSlice";
 import {
   Box,
   Button,
@@ -9,6 +9,7 @@ import {
   FormLabel,
   Heading,
   Alert,
+  AlertIcon,
   useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
