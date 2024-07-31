@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../redux/features/auth/authSlice";
 import {
@@ -9,16 +9,38 @@ import {
   FormLabel,
   Heading,
   Alert,
+  useToast,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const toast = useToast();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
-  const { error } = useSelector((state) => state.auth);
+  const { error, token } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (error) {
+      console.log("Error occurred:", error);
+      toast({
+        title: "Registration error",
+        description: error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      dispatch(clearError());
+    }
+
+    if (token) {
+      navigate("/contacts"); // Przekierowanie po rejestracji
+    }
+  }, [error, dispatch, toast, token, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,7 +61,12 @@ const Register = () => {
       <Heading as="h2" size="lg" textAlign="center" mb="1.5rem">
         Register
       </Heading>
-      {error && <Alert status="error">{error}</Alert>}
+      {error && (
+        <Alert status="error" mb="1rem">
+          <AlertIcon />
+          {error}
+        </Alert>
+      )}
       <form onSubmit={handleSubmit}>
         <FormControl id="name" mb="1rem">
           <FormLabel>Name</FormLabel>

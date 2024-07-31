@@ -12,9 +12,11 @@ import {
   AlertIcon,
   useToast,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
   const { error, token } = useSelector((state) => state.auth);
   const toast = useToast();
@@ -32,11 +34,13 @@ const Login = () => {
       dispatch(clearError());
     }
 
-    if (!token) {
+    if (token) {
+      navigate("/contacts"); // Przekierowanie po zalogowaniu
+    } else {
       // Resetowanie formularza po wylogowaniu
       setFormData({ email: "", password: "" });
     }
-  }, [error, dispatch, toast, token]);
+  }, [error, dispatch, toast, token, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
